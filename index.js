@@ -101,15 +101,67 @@ function addValue() {
         message: "Which would you like to add?",
         choices: ["Department", "Role", "Employee"]
     }).then(val => {
-            if (val.add === "Department") {
-                inquirer.prompt({
-                    type: "input",
-                    name: "dept_add",
-                    message: "What is the name of the department you would like to add?"
-                }).then(function (answer) {
-                    console.log(`You have added a ${answer.dept_add} department.`);
-                    connection.query("INSERT INTO Departments SET ?", {
-                            name: answer.dept_add,
+        if (val.add === "Department") {
+            inquirer.prompt({
+                type: "input",
+                name: "dept_add",
+                message: "What is the name of the department you would like to add?"
+            }).then(function (answer) {
+                console.log(`You have added a ${answer.dept_add} department.`);
+                connection.query("INSERT INTO Departments SET ?", {
+                        name: answer.dept_add,
+                    },
+                    function (err, res) {
+                        if (err) throw err;
+                        initialQuery();
+                    }
+                )
+            });
+        } else if (val.add === "Role") {
+            inquirer.prompt({
+                type: "input",
+                name: "role_add",
+                message: "What is the name of the role you would like to add?"
+            }).then(function (answer) {
+                console.log(`You have added a ${answer.role_add} role.`);
+                connection.query("INSERT INTO Roles SET ?", {
+                        title: answer.role_add,
+                    },
+                    function (err, res) {
+                        if (err) throw err;
+                        initialQuery();
+                    }
+                )
+            });
+        } else if (val.add === "Employee") {
+            inquirer.prompt([{
+                        type: "input",
+                        name: "empAddLastName",
+                        message: "What is the last name of the employee you would like to add?"
+                    },
+                    {
+                        type: "input",
+                        name: "empAddFirstName",
+                        message: "What is the first name of the employee you would like to add?"
+                    },
+                    {
+                        type: "number",
+                        name: "empAddRoleId",
+                        message: "What is the role ID of the employee you would like to add?"
+                    },
+                    {
+                        type: "number",
+                        name: "empAddMgrId",
+                        message: "What is the manager ID of the employee you would like to add?"
+                    }
+                ])
+                .then(function (answer) {
+                    console.log(`You have added a employee named ${answer.empAddFirstName} ${answer.empAddLastName}.`);
+                    connection.query("INSERT INTO Employees SET ?", {
+                            last_name: answer.empAddLastName,
+                            first_name: answer.empAddFirstName,
+                            role_id: answer.empAddRoleId,
+                            manager_id: answer.empAddMgrId
                         },
                         function (err, res) {
                             if (err) throw err;
@@ -117,22 +169,6 @@ function addValue() {
                         }
                     )
                 });
-            } else if (val.add === "Role") {
-                inquirer.prompt({
-                    type: "input",
-                    name: "role_add",
-                    message: "What is the name of the role you would like to add?"
-                }).then(function (answer) {
-                    console.log(`You have added a ${answer.role_add} role.`);
-                    connection.query("INSERT INTO Roles SET ?", {
-                            title: answer.role_add,
-                        },
-                        function (err, res) {
-                            if (err) throw err;
-                            initialQuery();
-                        }
-                    )
-                });
-            }
+        }
     })
 }
