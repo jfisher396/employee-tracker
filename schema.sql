@@ -21,7 +21,7 @@ CREATE TABLE Roles (
 CREATE TABLE Employees (
   emp_id INTEGER AUTO_INCREMENT NOT NULL,
   first_name VARCHAR(30) NOT NULL,
-  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
   role_id INTEGER,
   manager_id INTEGER NULL,
   PRIMARY KEY (emp_id),
@@ -29,5 +29,8 @@ CREATE TABLE Employees (
   FOREIGN KEY (manager_id) REFERENCES Employees(emp_id)
   
 );
+
+
+
 
 
