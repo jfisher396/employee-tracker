@@ -101,22 +101,38 @@ function addValue() {
         message: "Which would you like to add?",
         choices: ["Department", "Role", "Employee"]
     }).then(val => {
-        if (val.add === "Department") {
-            inquirer.prompt({
-                type: "input",
-                name: "dept_add",
-                message: "What is the name of the department you would like to add?"
-            }).then(function (answer) {
-                console.log(answer.dept_add);
-                connection.query("INSERT INTO Departments SET ?", {
-                        name: answer.dept_add,
-                    },
-                    function (err, res) {
-                        if (err) throw err;
-                        initialQuery();
-                    }
-                )
-            });
-        } if else 
+            if (val.add === "Department") {
+                inquirer.prompt({
+                    type: "input",
+                    name: "dept_add",
+                    message: "What is the name of the department you would like to add?"
+                }).then(function (answer) {
+                    console.log(`You have added a ${answer.dept_add} department.`);
+                    connection.query("INSERT INTO Departments SET ?", {
+                            name: answer.dept_add,
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            initialQuery();
+                        }
+                    )
+                });
+            } else if (val.add === "Role") {
+                inquirer.prompt({
+                    type: "input",
+                    name: "role_add",
+                    message: "What is the name of the role you would like to add?"
+                }).then(function (answer) {
+                    console.log(`You have added a ${answer.role_add} role.`);
+                    connection.query("INSERT INTO Roles SET ?", {
+                            title: answer.role_add,
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            initialQuery();
+                        }
+                    )
+                });
+            }
     })
 }
