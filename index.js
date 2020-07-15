@@ -17,11 +17,11 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    runSearch();
+    initialQuery();
 });
 
 
-function runSearch() {
+function initialQuery() {
     inquirer
         .prompt({
             name: "action",
@@ -32,53 +32,68 @@ function runSearch() {
                 "Add department, roles or employees",
                 "Update employee role",
                 "Update employee manager",
-                "Delete departments, roles or employees"
+                "Delete departments, roles or employees",
+                "Exit"
             ]
         })
-        // .then(function (answer) {
-        //     switch (answer.action) {
-        //         case "Find songs by artist":
-        //             artistSearch();
-        //             break;
+        .then(function (answer) {
+            switch (answer.action) {
+                case "View department, roles or employees":
+                    viewTable();
+                    break;
 
-        //         case "Find all artists who appear more than once":
-        //             multiSearch();
-        //             break;
+                case "Add department, roles or employees":
+                    multiSearch();
+                    break;
 
-        //         case "Find data within a specific range":
-        //             rangeSearch();
-        //             break;
+                case "Update employee role":
+                    rangeSearch();
+                    break;
 
-        //         case "Search for a specific song":
-        //             songSearch();
-        //             break;
+                case "Update employee manager":
+                    songSearch();
+                    break;
 
-        //         case "Find artists with a top song and top album in the same year":
-        //             songAndAlbumSearch();
-        //             break;
-        //     }
-        // });
+                case "Delete departments, roles or employees":
+                    songAndAlbumSearch();
+                    break;
+
+                case "Exit":
+                connection.end();
+                break;
+            }
+        });
 }
 
-// function artistSearch() {
-//     inquirer
-//         .prompt({
-//             name: "artist",
-//             type: "input",
-//             message: "What artist would you like to search for?"
-//         })
-//         .then(function (answer) {
-//             var query = "SELECT position, song, year FROM top5000 WHERE ?";
-//             connection.query(query, {
-//                 artist: answer.artist
-//             }, function (err, res) {
-//                 for (var i = 0; i < res.length; i++) {
-//                     console.log("Position: " + res[i].position + " || Song: " + res[i].song + " || Year: " + res[i].year);
-//                 }
-//                 runSearch();
-//             });
-//         });
-// }
+function viewTable() {
+    inquirer.prompt({
+        name: "view_table",
+        type: "list",
+        message: "Which table would you like to view?",
+        choices: ["Departments", "Roles", "Employees"]
+    }).then(val => {
+        if (val.view_table === "Departments") {
+            connection.query("SELECT * FROM Departments", function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                initialQuery();
+            });
+        } else if (val.view_table === "Roles") {
+            connection.query("SELECT * FROM Roles", function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                initialQuery();
+            });
+        } else if (val.view_table === "Employees") {
+            connection.query("SELECT * FROM Employees", function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                initialQuery();
+            });
+        }
+    })
+}
+
 
 // function multiSearch() {
 //     var query = "SELECT artist FROM top5000 GROUP BY artist HAVING count(*) > 1";
