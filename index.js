@@ -118,21 +118,35 @@ function addValue() {
                 )
             });
         } else if (val.add === "Role") {
-            inquirer.prompt({
-                type: "input",
-                name: "role_add",
-                message: "What is the name of the role you would like to add?"
-            }).then(function (answer) {
-                console.log(`You have added a ${answer.role_add} role.`);
-                connection.query("INSERT INTO Roles SET ?", {
-                        title: answer.role_add,
+            inquirer.prompt([{
+                        type: "input",
+                        name: "role_add",
+                        message: "What is the name of the role you would like to add?"
                     },
-                    function (err, res) {
-                        if (err) throw err;
-                        initialQuery();
+                    {
+                        type: "number",
+                        name: "salary",
+                        message: "What is the salary for the role you would like to add?"
+                    },
+                    {
+                        type: "number",
+                        name: "deptId",
+                        message: "What is the department ID for the role you would like to add?"
                     }
-                )
-            });
+                ])
+                .then(function (answer) {
+                    console.log(`You have added the role of ${answer.role_add}.`);
+                    connection.query("INSERT INTO Roles SET ?", {
+                            title: answer.role_add,
+                            salary: answer.salary,
+                            dept_id: answer.deptId
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            initialQuery();
+                        }
+                    )
+                });
         } else if (val.add === "Employee") {
             inquirer.prompt([{
                         type: "input",
