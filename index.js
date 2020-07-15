@@ -106,11 +106,10 @@ function addValue() {
                 type: "input",
                 name: "dept_add",
                 message: "What is the name of the department you would like to add?"
-            }).then(function(answer) {
+            }).then(function (answer) {
                 console.log(answer.dept_add);
-                connection.query("INSERT INTO Departments SET ?", 
-                    {
-                        name: answer[],
+                connection.query("INSERT INTO Departments SET ?", {
+                        name: answer.dept_add,
                     },
                     function (err, res) {
                         if (err) throw err;
@@ -118,6 +117,6 @@ function addValue() {
                     }
                 )
             });
-        }
+        } if else 
     })
 }
