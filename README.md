@@ -13,7 +13,8 @@
   A solution for managing a company's employees using node, inquirer, and MySQL.
  
   ![GitHub Logo](/media/Employee%20Tracker%201.png)
-  ![GitHub Logo](/media/Team%20generator%20screenshot.png)
+ 
+  ![GitHub Logo](/media/Employee%20Tracker%202.png)
   ---
 
   ## Table of Contents:
