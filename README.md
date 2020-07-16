@@ -11,7 +11,8 @@
   ## Description:
 
   A solution for managing a company's employees using node, inquirer, and MySQL.
-
+  ![GitHub Logo](/media/Team%20generator%20screenshot.png)
+  ![GitHub Logo](/media/Team%20generator%20screenshot.png)
   ---
 
   ## Table of Contents:
