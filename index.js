@@ -31,8 +31,6 @@ function initialQuery() {
                 "View department, roles or employees",
                 "Add department, roles or employees",
                 "Update employee role",
-                "Update employee manager",
-                "Delete departments, roles or employees",
                 "Exit"
             ]
         })
@@ -48,14 +46,6 @@ function initialQuery() {
 
                 case "Update employee role":
                     updateRole();
-                    break;
-
-                case "Update employee manager":
-                    songSearch();
-                    break;
-
-                case "Delete departments, roles or employees":
-                    songAndAlbumSearch();
                     break;
 
                 case "Exit":
@@ -135,7 +125,7 @@ function addValue() {
                     }
                 ])
                 .then(function (answer) {
-                    console.log(`You have added the role of ${answer.role_add}.`);
+                    console.log(`You have added the role of ${answer.role_add} with a salary of ${answer.salary}.`);
                     connection.query("INSERT INTO Roles SET ?", {
                             title: answer.role_add,
                             salary: answer.salary,
@@ -166,11 +156,14 @@ function addValue() {
                     {
                         type: "number",
                         name: "empAddMgrId",
-                        message: "What is the manager ID of the employee you would like to add?"
+                        message: "What is the manager ID of the employee you would like to add?",
+                        default: 1
                     }
                 ])
                 .then(function (answer) {
-                    console.log(`You have added a employee named ${answer.empAddFirstName} ${answer.empAddLastName}.`);
+                
+                    console.log(answer)
+
                     connection.query("INSERT INTO Employees SET ?", {
                             last_name: answer.empAddLastName,
                             first_name: answer.empAddFirstName,
@@ -182,6 +175,7 @@ function addValue() {
                             initialQuery();
                         }
                     )
+
                 });
         }
     })
@@ -204,7 +198,7 @@ function updateRole() {
                     inquirer.prompt({
                         name: "idConfirm",
                         type: "number",
-                        message: "Please enter the employee's ID to confirm choice:",
+                        message: "Please enter the employee's ID to confirm choice:"
                     }).then(function (answer) {
                         var query = "SELECT * FROM Employees WHERE ?";
                         connection.query(query, {
@@ -219,6 +213,7 @@ function updateRole() {
                                         message: "Please enter the new role ID for the employee:",
                                     })
                                     .then(function (answer) {
+                                        console.log(`You have changed the role of the employee.`);
                                         var query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
                                         connection.query(query, {
                                             role_id: answer.newRoleId,
