@@ -47,7 +47,7 @@ function initialQuery() {
                     break;
 
                 case "Update employee role":
-                    rangeSearch();
+                    updateRole();
                     break;
 
                 case "Update employee manager":
@@ -185,4 +185,52 @@ function addValue() {
                 });
         }
     })
+}
+
+function updateRole() {
+    inquirer
+        .prompt([{
+            name: "newRole",
+            type: "input",
+            message: "What is the last name of the employee you would like to update?"
+        }])
+        .then(function (answer) {
+            var query = "SELECT * FROM Employees WHERE ?";
+            connection.query(query, {
+                last_name: answer.newRole
+            }, function (err, res) {
+                for (var i = 0; i < res.length; i++) {
+                    console.table(res);
+                    inquirer.prompt({
+                        name: "idConfirm",
+                        type: "number",
+                        message: "Please enter the employee's ID to confirm choice:",
+                    }).then(function (answer) {
+                        var query = "SELECT * FROM Employees WHERE ?";
+                        connection.query(query, {
+                            emp_id: answer.idConfirm
+                        }, function (err, res) {
+                            for (var i = 0; i < res.length; i++) {
+                                console.log(answer.idConfirm);
+                                let newRoleVar = answer.idConfirm;
+                                inquirer.prompt({
+                                        name: "newRoleId",
+                                        type: "number",
+                                        message: "Please enter the new role ID for the employee:",
+                                    })
+                                    .then(function (answer) {
+                                        var query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+                                        connection.query(query, {
+                                            role_id: answer.newRoleId,
+                                        }, function (err, res) {
+                                            if (err) throw err;
+                                            initialQuery();
+                                        });
+                                    });
+                            }
+                        })
+                    })
+                }
+            })
+        })
 }
