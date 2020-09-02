@@ -1,16 +1,14 @@
 
   
-  # Project Title:
-
-  Employee Tracker
+  # Employee Tracker
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  
----
 
   ## Description:
 
   A solution for managing a company's employees using node, inquirer, and MySQL.
+  
+  ## Visuals:
  
   ![GitHub Logo](/media/Employee%20Tracker%201.png)
  
