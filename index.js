@@ -1,6 +1,15 @@
+//TODO: no empty strings when adding
+//TODO: modulize the functions
+
+//TODO: add console logs lines for user experience
+//TODO: create delete functions
+//TODO: 
+
+
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-
+const figlet = require("figlet");
+const chalk = require("chalk");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -15,6 +24,35 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
+  console.log(
+    chalk.blue.bold(
+      `==============================================================================================`
+    )
+  );
+  console.log(``);
+
+  console.log(
+    chalk.red.bold(
+      figlet.textSync("Galactic Empire", {
+        font: "Star Wars",
+        horizontalLayout: "default",
+        verticalLayout: "default",
+        width: 90,
+        whitespaceBreak: false,
+      })
+    )
+  );
+
+  console.log(
+    `                                                                    ` +
+      chalk.yellow.bold("Created By: James Fisher")
+  );
+
+  console.log(``);
+  console.log(chalk.blue.bold(`==============================================================================================`));
+
+  console.log(chalk.blue.bold(`==============================================================================================`)); 
+  // asks the first set of questions using Enquirer
   initialQuery();
 });
 
@@ -249,7 +287,7 @@ function updateRole() {
                           console.log(
                             `You have changed the role of the employee.`
                           );
-                          var query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+                          let query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
                           connection.query(
                             query,
                             {
