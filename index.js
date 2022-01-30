@@ -115,7 +115,8 @@ function viewTable() {
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
-        connection.query("SELECT * FROM Employees", function (err, res) {
+          let query = "SELECT emp_id, first_name, last_name, title, salary FROM employees INNER JOIN roles ON employees.role_Id = roles.role_id ORDER BY last_name ASC"
+        connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                              ` + chalk.red.bold(`All Employees:`));
@@ -264,6 +265,9 @@ function updateRole() {
         },
         function (err, res) {
           for (var i = 0; i < res.length; i++) {
+            console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+            console.log(chalk.green.bold(`====================================================================================`));
             console.table(res);
             inquirer
               .prompt({
@@ -272,14 +276,14 @@ function updateRole() {
                 message: "Please enter the employee's ID to confirm choice:",
               })
               .then(function (answer) {
-                var query = "SELECT * FROM Employees WHERE ?";
+                let query = "SELECT * FROM Employees WHERE ?";
                 connection.query(
                   query,
                   {
                     emp_id: answer.idConfirm,
                   },
                   function (err, res) {
-                    for (var i = 0; i < res.length; i++) {
+                    for (let i = 0; i < res.length; i++) {
                       console.log(answer.idConfirm);
                       let newRoleVar = answer.idConfirm;
                       inquirer
