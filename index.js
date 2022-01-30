@@ -1,6 +1,5 @@
 //TODO: no empty strings when adding
 //TODO: modulize the functions
-
 //TODO: add console logs lines for user experience
 //TODO: create delete functions
 //TODO: 
@@ -24,11 +23,9 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
-  console.log(
-    chalk.blue.bold(
-      `==============================================================================================`
-    )
-  );
+  console.log(chalk.blue.bold(`==============================================================================================`));
+  console.log(chalk.blue.bold(`==============================================================================================`));
+  
   console.log(``);
 
   console.log(
@@ -50,8 +47,8 @@ connection.connect(function (err) {
 
   console.log(``);
   console.log(chalk.blue.bold(`==============================================================================================`));
-
-  console.log(chalk.blue.bold(`==============================================================================================`)); 
+  console.log(chalk.blue.bold(`==============================================================================================`));
+  console.log(``);
   // asks the first set of questions using Enquirer
   initialQuery();
 });
@@ -102,18 +99,27 @@ function viewTable() {
       if (val.view_table === "Departments") {
         connection.query("SELECT * FROM Departments", function (err, res) {
           if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.red.bold(`All Departments:`));
+            console.log(chalk.green.bold(`====================================================================================`));
           console.table(res);
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
         connection.query("SELECT * FROM Roles", function (err, res) {
           if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.red.bold(`All Roles:`));
+            console.log(chalk.green.bold(`====================================================================================`));
           console.table(res);
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
         connection.query("SELECT * FROM Employees", function (err, res) {
           if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.red.bold(`All Employees:`));
+            console.log(chalk.green.bold(`====================================================================================`));
           console.table(res);
           initialQuery();
         });
