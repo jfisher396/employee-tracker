@@ -106,7 +106,8 @@ function viewTable() {
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
-        connection.query("SELECT * FROM Roles", function (err, res) {
+        let query = "SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles INNER JOIN departments ON roles.dept_id = departments.dept_id ORDER BY roles.role_id ASC"
+        connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                              ` + chalk.red.bold(`All Roles:`));
