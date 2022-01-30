@@ -97,7 +97,7 @@ function viewTable() {
     })
     .then((val) => {
       if (val.view_table === "Departments") {
-        connection.query("SELECT * FROM Departments", function (err, res) {
+        connection.query("SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments", function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                              ` + chalk.red.bold(`All Departments:`));
