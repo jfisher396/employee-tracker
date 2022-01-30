@@ -30,7 +30,7 @@ connection.connect(function (err) {
 
   console.log(
     chalk.red.bold(
-      figlet.textSync("Galactic Empire", {
+      figlet.textSync("Employee Tracker", {
         font: "Star Wars",
         horizontalLayout: "default",
         verticalLayout: "default",
