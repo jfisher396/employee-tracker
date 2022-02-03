@@ -2,7 +2,6 @@
 //TODO: modulize the functions
 //TODO: add console logs lines for user experience
 //TODO: create delete functions
-//TODO: 
 
 
 const mysql = require("mysql");
@@ -10,6 +9,7 @@ const inquirer = require("inquirer");
 const figlet = require("figlet");
 const chalk = require("chalk");
 
+// creates connection with the MySQL database
 const connection = mysql.createConnection({
   host: "localhost",
   // Your port; if not 3306
@@ -18,19 +18,18 @@ const connection = mysql.createConnection({
   user: "root",
   // Your password
   password: "password",
-  database: "employeesDB",
+  database: "galactic_empire_db",
 });
 
+// function that runs upon starting the file
 connection.connect(function (err) {
   if (err) throw err;
   console.log(chalk.blue.bold(`==============================================================================================`));
   console.log(chalk.blue.bold(`==============================================================================================`));
   
   console.log(``);
-
-  console.log(
-    chalk.red.bold(
-      figlet.textSync("Employee Tracker", {
+  // Creates title using Figlet package
+  console.log(chalk.red.bold(figlet.textSync("Employee Tracker", {
         font: "Star Wars",
         horizontalLayout: "default",
         verticalLayout: "default",
@@ -40,10 +39,7 @@ connection.connect(function (err) {
     )
   );
 
-  console.log(
-    `                                                                    ` +
-      chalk.yellow.bold("Created By: James Fisher")
-  );
+  console.log(`                                                                    ` + chalk.yellow.bold("Created By: James Fisher"));
 
   console.log(``);
   console.log(chalk.blue.bold(`==============================================================================================`));
@@ -53,6 +49,7 @@ connection.connect(function (err) {
   initialQuery();
 });
 
+// Asks the user if they would like to view, add or update data
 function initialQuery() {
   inquirer
     .prompt({
@@ -97,7 +94,7 @@ function viewTable() {
     })
     .then((val) => {
       if (val.view_table === "Departments") {
-        connection.query("SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments", function (err, res) {
+        connection.query(`SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments`, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                              ` + chalk.red.bold(`All Departments:`));
@@ -106,7 +103,9 @@ function viewTable() {
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
-        let query = "SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles INNER JOIN departments ON roles.dept_id = departments.dept_id ORDER BY roles.role_id ASC"
+        let query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles 
+        INNER JOIN departments ON roles.dept_id = departments.dept_id 
+        ORDER BY roles.role_id ASC`
         connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
@@ -116,7 +115,10 @@ function viewTable() {
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
-          let query = "SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees INNER JOIN roles ON employees.role_Id = roles.role_id INNER JOIN departments ON roles.dept_id = departments.dept_id ORDER BY last_name ASC"
+          let query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+          INNER JOIN roles ON employees.role_Id = roles.role_id 
+          INNER JOIN departments ON roles.dept_id = departments.dept_id 
+          ORDER BY last_name ASC`
         connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
@@ -247,75 +249,82 @@ function addValue() {
 }
 
 function updateRole() {
-    console.table()
-  inquirer
-    .prompt([
-      {
-        name: "newRole",
-        type: "input",
-        message:
-          "What is the last name of the employee you would like to update?",
-      },
-    ])
-    .then(function (answer) {
-      var query = "SELECT * FROM Employees WHERE ?";
-      connection.query(
-        query,
-        {
-          last_name: answer.newRole,
-        },
-        function (err, res) {
-          for (var i = 0; i < res.length; i++) {
-            console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                              ` + chalk.red.bold(`Employee Information:`));
-            console.log(chalk.green.bold(`====================================================================================`));
-            console.table(res);
-            inquirer
-              .prompt({
-                name: "idConfirm",
-                type: "number",
-                message: "Please enter the employee's ID to confirm choice:",
-              })
-              .then(function (answer) {
-                let query = "SELECT * FROM Employees WHERE ?";
-                connection.query(
-                  query,
-                  {
-                    emp_id: answer.idConfirm,
-                  },
-                  function (err, res) {
-                    for (let i = 0; i < res.length; i++) {
-                      console.log(answer.idConfirm);
-                      let newRoleVar = answer.idConfirm;
-                      inquirer
-                        .prompt({
-                          name: "newRoleId",
-                          type: "number",
-                          message:
-                            "Please enter the new role ID for the employee:",
-                        })
-                        .then(function (answer) {
-                          console.log(
-                            `You have changed the role of the employee.`
-                          );
-                          let query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
-                          connection.query(
-                            query,
-                            {
-                              role_id: answer.newRoleId,
-                            },
-                            function (err, res) {
-                              if (err) throw err;
-                              initialQuery();
-                            }
-                          );
-                        });
-                    }
-                  }
-                );
-              });
-          }
-        }
-      );
-    });
+
+    let employeeArr = [];
+    let roleArr = [];
+
+
+//   inquirer
+//     .prompt([
+//       {
+//         name: "newRole",
+//         type: "input",
+//         message:
+//           "What is the last name of the employee you would like to update?",
+//       },
+//     ])
+//     .then(function (answer) {
+//       const query = "SELECT * FROM Employees WHERE ?";
+//       connection.query(
+//         query,
+//         {
+//           last_name: answer.newRole,
+//         },
+//         function (err, res) {
+//           for (var i = 0; i < res.length; i++) {
+//             console.log(chalk.green.bold(`====================================================================================`));
+//             console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+//             console.log(chalk.green.bold(`====================================================================================`));
+           
+//             console.table(res);
+
+
+//             inquirer
+//               .prompt({
+//                 name: "idConfirm",
+//                 type: "number",
+//                 message: "Please enter the employee's ID to confirm choice:",
+//               })
+//               .then(function (answer) {
+//                 let query = "SELECT * FROM Employees WHERE ?";
+//                 connection.query(
+//                   query,
+//                   {
+//                     emp_id: answer.idConfirm,
+//                   },
+//                   function (err, res) {
+//                     for (let i = 0; i < res.length; i++) {
+//                       console.log(answer.idConfirm);
+//                       let newRoleVar = answer.idConfirm;
+//                       inquirer
+//                         .prompt({
+//                           name: "newRoleId",
+//                           type: "number",
+//                           message:
+//                             "Please enter the new role ID for the employee:",
+//                         })
+//                         .then(function (answer) {
+//                           console.log(
+//                             `You have changed the role of the employee.`
+//                           );
+//                           const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+//                           connection.query(
+//                             query,
+//                             {
+//                               role_id: answer.newRoleId,
+//                             },
+//                             function (err, res) {
+//                               if (err) throw err;
+//                               initialQuery();
+//                             }
+//                           );
+//                         });
+//                     }
+//                   }
+//                 );
+//               });
+//           }
+//         }
+//       );
+//     });
 }
