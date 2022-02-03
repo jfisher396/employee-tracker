@@ -250,81 +250,62 @@ function addValue() {
 
 function updateRole() {
 
-    let employeeArr = [];
-    let roleArr = [];
+  // asks the user for the last name of the employee they would like to update
+  inquirer
+    .prompt([
+      {
+        name: "newRole",
+        type: "input",
+        message:
+          "What is the last name of the employee you would like to update?",
+      },
+    ])
+    .then(function (answer) {
+      const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+      INNER JOIN roles ON employees.role_Id = roles.role_id
+      INNER JOIN departments ON roles.dept_id = departments.dept_id 
+      WHERE ?`;
+      connection.query(query, { last_name: answer.newRole }, function (err, res) {
 
-
-//   inquirer
-//     .prompt([
-//       {
-//         name: "newRole",
-//         type: "input",
-//         message:
-//           "What is the last name of the employee you would like to update?",
-//       },
-//     ])
-//     .then(function (answer) {
-//       const query = "SELECT * FROM Employees WHERE ?";
-//       connection.query(
-//         query,
-//         {
-//           last_name: answer.newRole,
-//         },
-//         function (err, res) {
-//           for (var i = 0; i < res.length; i++) {
-//             console.log(chalk.green.bold(`====================================================================================`));
-//             console.log(`                              ` + chalk.red.bold(`Employee Information:`));
-//             console.log(chalk.green.bold(`====================================================================================`));
+        console.log(chalk.green.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+        console.log(chalk.green.bold(`====================================================================================`));
            
-//             console.table(res);
-
-
-//             inquirer
-//               .prompt({
-//                 name: "idConfirm",
-//                 type: "number",
-//                 message: "Please enter the employee's ID to confirm choice:",
-//               })
-//               .then(function (answer) {
-//                 let query = "SELECT * FROM Employees WHERE ?";
-//                 connection.query(
-//                   query,
-//                   {
-//                     emp_id: answer.idConfirm,
-//                   },
-//                   function (err, res) {
-//                     for (let i = 0; i < res.length; i++) {
-//                       console.log(answer.idConfirm);
-//                       let newRoleVar = answer.idConfirm;
-//                       inquirer
-//                         .prompt({
-//                           name: "newRoleId",
-//                           type: "number",
-//                           message:
-//                             "Please enter the new role ID for the employee:",
-//                         })
-//                         .then(function (answer) {
-//                           console.log(
-//                             `You have changed the role of the employee.`
-//                           );
-//                           const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
-//                           connection.query(
-//                             query,
-//                             {
-//                               role_id: answer.newRoleId,
-//                             },
-//                             function (err, res) {
-//                               if (err) throw err;
-//                               initialQuery();
-//                             }
-//                           );
-//                         });
-//                     }
-//                   }
-//                 );
-//               });
-//           }
-//         }
-//       );
-//     });
+        console.table(res);
+        
+        inquirer
+            .prompt({
+            name: "idConfirm",
+            type: "number",
+            message: "Please enter the employee's ID to confirm choice:",
+            }).then(function (answer) {
+            let query = "SELECT * FROM Employees WHERE ?";
+            connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
+                for (let i = 0; i < res.length; i++) {
+                    console.log(answer.idConfirm);
+                    let newRoleVar = answer.idConfirm;
+                    inquirer
+                    .prompt({
+                        name: "newRoleId",
+                        type: "number",
+                        message:
+                        "Please enter the new role ID for the employee:",
+                    })
+                    .then(function (answer) {
+                        console.log(`You have changed the role of the employee.`);
+                        const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+                        connection.query(query, { role_id: answer.newRoleId }, function (err, res) {
+                            if (err) throw err;
+                            initialQuery();
+                        }
+                        );
+                    });
+                }
+                }
+            );
+            });
+    
+    }
+    );
+    });
 }
