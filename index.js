@@ -60,6 +60,7 @@ function initialQuery() {
         "View department, roles or employees",
         "Add department, roles or employees",
         "Update employee role",
+        "Remove employee",
         "Exit",
       ],
     })
@@ -76,6 +77,10 @@ function initialQuery() {
         case "Update employee role":
           updateRole();
           break;
+
+        case "Remove employee":
+            removeEmp();
+            break;
 
         case "Exit":
           connection.end();
@@ -281,31 +286,89 @@ function updateRole() {
             }).then(function (answer) {
             let query = "SELECT * FROM Employees WHERE ?";
             connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
-                for (let i = 0; i < res.length; i++) {
-                    console.log(answer.idConfirm);
-                    let newRoleVar = answer.idConfirm;
-                    inquirer
-                    .prompt({
-                        name: "newRoleId",
-                        type: "number",
-                        message:
-                        "Please enter the new role ID for the employee:",
-                    })
-                    .then(function (answer) {
-                        console.log(`You have changed the role of the employee.`);
-                        const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
-                        connection.query(query, { role_id: answer.newRoleId }, function (err, res) {
-                            if (err) throw err;
-                            initialQuery();
-                        }
-                        );
-                    });
-                }
-                }
+              for (let i = 0; i < res.length; i++) {
+                
+                let newRoleVar = answer.idConfirm;
+                inquirer
+                .prompt({
+                    name: "newRoleId",
+                    type: "number",
+                    message:
+                    "Please enter the new role ID for the employee:",
+                })
+                .then(function (answer) {
+                    console.log(`You have changed the role of the employee.`);
+                    const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+                    connection.query(query, { role_id: answer.newRoleId }, function (err, res) {
+                        if (err) throw err;
+                        initialQuery();
+                    }
+                    );
+                });
+              }
+            }
             );
             });
     
     }
     );
     });
+}
+
+function removeEmp() {
+
+    inquirer
+    .prompt([
+      {
+        name: "empToRemove",
+        type: "input",
+        message:
+          "What is the last name of the employee you would like to remove?",
+      },
+    ])
+    .then(function (answer) {
+      const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+      INNER JOIN roles ON employees.role_Id = roles.role_id
+      INNER JOIN departments ON roles.dept_id = departments.dept_id 
+      WHERE ?`;
+      connection.query(query, { last_name: answer.empToRemove }, function (err, res) {
+
+        console.log(chalk.green.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+        console.log(chalk.green.bold(`====================================================================================`));
+           
+        console.table(res);
+        
+        inquirer
+            .prompt({
+            name: "idConfirm",
+            type: "number",
+            message: "Please enter the employee's ID to confirm choice:",
+            })
+            .then(function (answer) {
+            let query = "SELECT * FROM Employees WHERE ?";
+            connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
+              
+                console.log(answer.idConfirm);
+                let idToDelete = answer.idConfirm;
+                
+                let deleteQuery = `DELETE FROM employees WHERE emp_id = ${idToDelete}`;
+                connection.query(deleteQuery, function(err,res) {
+                  if (err) throw err;
+                        
+                  console.log("Employee deleted");
+
+                  initialQuery();
+                })
+
+                    
+            
+            }
+            );
+            });
+    
+    }
+    );
+    });
+    
 }
