@@ -59,6 +59,7 @@ function initialQuery() {
         "Add department, roles or employees",
         "Update employee role",
         "Remove employee",
+        "View department budgets",
         "Exit",
       ],
     })
@@ -78,6 +79,10 @@ function initialQuery() {
 
         case "Remove employee":
             removeEmp();
+            break;
+
+        case "View department budgets":
+            viewBudget();
             break;
 
         case "Exit":
@@ -363,7 +368,7 @@ function removeEmp() {
               connection.query(deleteQuery, function(err,res) {
                 if (err) throw err;
                       
-                console.log(`Employee ID #${idToDelete} has been removed.`);
+                console.log(`Employee with ID #${idToDelete} has been removed.`);
 
                 initialQuery();
               })
@@ -378,4 +383,18 @@ function removeEmp() {
     );
     });
     
+}
+
+function viewBudget() {
+  let query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget FROM roles 
+  INNER JOIN departments ON roles.dept_id = departments.dept_id 
+  GROUP BY roles.dept_id;`;
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.log(chalk.green.bold(`====================================================================================`));
+    console.log(`                              ` + chalk.red.bold(`Department Budgets:`));
+    console.log(chalk.green.bold(`====================================================================================`));
+    console.table(res);
+    initialQuery();
+  })
 }
