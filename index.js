@@ -1,8 +1,6 @@
 //TODO: no empty strings when adding
 //TODO: modulize the functions
-//TODO: add console logs lines for user experience
 //TODO: create delete functions
-
 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
@@ -154,7 +152,11 @@ function addValue() {
               "What is the name of the department you would like to add?",
           })
           .then(function (answer) {
-            console.log(`You have added a ${answer.dept_add} department.`);
+
+            console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                     ` + chalk.red.bold(`Department Added:`) + ` ${answer.dept_add}`);
+            console.log(chalk.green.bold(`====================================================================================`));
+            
             connection.query(
               "INSERT INTO Departments SET ?",
               {
@@ -187,7 +189,11 @@ function addValue() {
             },
           ])
           .then(function (answer) {
-            console.log(`You have added the role of ${answer.role_add} with a salary of ${answer.salary}.`);
+
+            console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                     ` + chalk.red.bold(`Role Added:`) + ` ${answer.role_add} with a salary of ${answer.salary}`);
+            console.log(chalk.green.bold(`====================================================================================`));
+            
             connection.query(
               "INSERT INTO Roles SET ?",
               {
