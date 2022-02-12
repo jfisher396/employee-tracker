@@ -106,8 +106,9 @@ function viewTable() {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                              ` + chalk.red.bold(`All Departments:`));
+            console.table(res);
             console.log(chalk.green.bold(`====================================================================================`));
-          console.table(res);
+          
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
@@ -117,9 +118,10 @@ function viewTable() {
         connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                              ` + chalk.red.bold(`All Roles:`));
-            console.log(chalk.green.bold(`====================================================================================`));
+          console.log(`                              ` + chalk.red.bold(`All Roles:`));
           console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
@@ -130,9 +132,10 @@ function viewTable() {
         connection.query(query, function (err, res) {
           if (err) throw err;
           console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                              ` + chalk.red.bold(`All Employees:`));
-            console.log(chalk.green.bold(`====================================================================================`));
+          console.log(`                              ` + chalk.red.bold(`All Employees:`));
           console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          
           initialQuery();
         });
       }
@@ -279,6 +282,7 @@ function updateRole() {
       },
     ])
     .then(function (answer) {
+      let newRole = null;
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
@@ -310,13 +314,37 @@ function updateRole() {
                     "Please enter the new role ID for the employee:",
                 })
                 .then(function (answer) {
-                    console.log(`You have changed the role of the employee.`);
+
+                    newRole = answer.newRoleId;
+                    
                     const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
+
                     connection.query(query, { role_id: answer.newRoleId }, function (err, res) {
                         if (err) throw err;
                         initialQuery();
                     }
                     );
+                })
+                .then(function () {
+                  
+                  let query = `SELECT title FROM roles WHERE role_id = ${newRole}`;
+                  connection.query(query, function(err,res) {
+                    if (err) throw err;
+                    console.log(res);
+                    res.toString = function () {
+                      return res
+                    }
+                    console.log(res)
+                    // for (const property in res) {
+                    //   console.log(`${property}: ${res[property]}`)
+                    // }
+
+
+                    console.log(chalk.green.bold(`====================================================================================`));
+                    console.log(`                     ` + chalk.red.bold(`New role for employee:`) + ` ${res}`);
+                    console.log(chalk.green.bold(`====================================================================================`));
+                    
+                  })
                 });
               }
             }
@@ -348,9 +376,8 @@ function removeEmp() {
 
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
-        console.log(chalk.green.bold(`====================================================================================`));
-           
         console.table(res);
+        console.log(chalk.green.bold(`====================================================================================`));
         
         inquirer
             .prompt({
@@ -368,7 +395,10 @@ function removeEmp() {
               connection.query(deleteQuery, function(err,res) {
                 if (err) throw err;
                       
-                console.log(`Employee with ID #${idToDelete} has been removed.`);
+                console.log(chalk.green.bold(`====================================================================================`));
+                console.log(`                  ` + chalk.red.bold(`Employee with ID #${idToDelete} has been removed.`));
+                console.log(chalk.green.bold(`====================================================================================`));
+                
 
                 initialQuery();
               })
@@ -393,8 +423,9 @@ function viewBudget() {
     if (err) throw err;
     console.log(chalk.green.bold(`====================================================================================`));
     console.log(`                              ` + chalk.red.bold(`Department Budgets:`));
-    console.log(chalk.green.bold(`====================================================================================`));
     console.table(res);
+    console.log(chalk.green.bold(`====================================================================================`));
+    
     initialQuery();
   })
 }
