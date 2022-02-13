@@ -1,23 +1,11 @@
-//TODO: no empty strings when adding
-//TODO: modulize the functions
-//TODO: create delete functions
+// npm packages set as variables
 
-const mysql = require("mysql");
 const inquirer = require("inquirer");
 const figlet = require("figlet");
 const chalk = require("chalk");
 
-// creates connection with the MySQL database
-const connection = mysql.createConnection({
-  host: "localhost",
-  // Your port; if not 3306
-  port: 3306,
-  // Your username
-  user: "root",
-  // Your password
-  password: "password",
-  database: "galactic_empire_db",
-});
+// modules set as variables
+const {connection} = require('./config/connection');
 
 // function that runs upon starting the file
 connection.connect(function (err) {
@@ -46,51 +34,6 @@ connection.connect(function (err) {
   // asks the first set of questions using Enquirer
   initialQuery();
 });
-
-// Asks the user if they would like to view, add or update data
-function initialQuery() {
-  inquirer
-    .prompt({
-      name: "action",
-      type: "rawlist",
-      message: "What would you like to do?",
-      choices: [
-        "View department, roles or employees",
-        "Add department, roles or employees",
-        "Update employee role",
-        "Remove employee",
-        "View department budgets",
-        "Exit",
-      ],
-    })
-    .then(function (answer) {
-      switch (answer.action) {
-        case "View department, roles or employees":
-          viewTable();
-          break;
-
-        case "Add department, roles or employees":
-          addValue();
-          break;
-
-        case "Update employee role":
-          updateRole();
-          break;
-
-        case "Remove employee":
-            removeEmp();
-            break;
-
-        case "View department budgets":
-            viewBudget();
-            break;
-
-        case "Exit":
-          connection.end();
-          break;
-      }
-    });
-}
 
 function viewTable() {
   inquirer
@@ -138,6 +81,51 @@ function viewTable() {
           
           initialQuery();
         });
+      }
+    });
+}
+
+// Asks the user if they would like to view, add or update data
+function initialQuery() {
+  inquirer
+    .prompt({
+      name: "action",
+      type: "rawlist",
+      message: "What would you like to do?",
+      choices: [
+        "View department, roles or employees",
+        "Add department, roles or employees",
+        "Update employee role",
+        "Remove employee",
+        "View department budgets",
+        "Exit",
+      ],
+    })
+    .then(function (answer) {
+      switch (answer.action) {
+        case "View department, roles or employees":
+          viewTable();
+          break;
+
+        case "Add department, roles or employees":
+          addValue();
+          break;
+
+        case "Update employee role":
+          updateRole();
+          break;
+
+        case "Remove employee":
+            removeEmp();
+            break;
+
+        case "View department budgets":
+            viewBudget();
+            break;
+
+        case "Exit":
+          connection.end();
+          break;
       }
     });
 }
@@ -330,18 +318,9 @@ function updateRole() {
                   let query = `SELECT title FROM roles WHERE role_id = ${newRole}`;
                   connection.query(query, function(err,res) {
                     if (err) throw err;
-                    console.log(res);
-                    res.toString = function () {
-                      return res
-                    }
-                    console.log(res)
-                    // for (const property in res) {
-                    //   console.log(`${property}: ${res[property]}`)
-                    // }
-
-
+        
                     console.log(chalk.green.bold(`====================================================================================`));
-                    console.log(`                     ` + chalk.red.bold(`New role for employee:`) + ` ${res}`);
+                    console.log(`                     ` + chalk.red.bold(`The `));
                     console.log(chalk.green.bold(`====================================================================================`));
                     
                   })
@@ -428,4 +407,8 @@ function viewBudget() {
     
     initialQuery();
   })
+}
+
+module.exports = {
+  initialQuery
 }
