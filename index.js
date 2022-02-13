@@ -209,6 +209,14 @@ addValue = () => {
               name: "empAddFirstName",
               message:
                 "What is the first name of the employee you would like to add?",
+              validate: nameInput => {
+                if (nameInput) {
+                  return true
+                } else {
+                  console.log ("Please enter a first name");
+                  return false
+                }
+              }
             },
             {
               type: "input",
