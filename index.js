@@ -3,6 +3,7 @@
 const inquirer = require("inquirer");
 const figlet = require("figlet");
 const chalk = require("chalk");
+const cTable = require("console.table");
 
 // modules set as variables
 const {connection} = require('./config/connection');
@@ -31,7 +32,7 @@ connection.connect((err) => {
   console.log(chalk.blue.bold(`==============================================================================================`));
   console.log(chalk.blue.bold(`==============================================================================================`));
   console.log(``);
-  // asks the first set of questions using Enquirer
+  // calls the initialQuery function that asks the user what they would like to do
   initialQuery();
 });
 
