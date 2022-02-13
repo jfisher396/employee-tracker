@@ -8,7 +8,7 @@ const chalk = require("chalk");
 const {connection} = require('./config/connection');
 
 // function that runs upon starting the file
-connection.connect(function (err) {
+connection.connect((err) => {
   if (err) throw err;
   console.log(chalk.blue.bold(`==============================================================================================`));
   console.log(chalk.blue.bold(`==============================================================================================`));
@@ -35,58 +35,8 @@ connection.connect(function (err) {
   initialQuery();
 });
 
-function viewTable() {
-  inquirer
-    .prompt({
-      name: "view_table",
-      type: "list",
-      message: "Which table would you like to view?",
-      choices: ["Departments", "Roles", "Employees"],
-    })
-    .then((val) => {
-      if (val.view_table === "Departments") {
-        connection.query(`SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments`, function (err, res) {
-          if (err) throw err;
-          console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                              ` + chalk.red.bold(`All Departments:`));
-            console.table(res);
-            console.log(chalk.green.bold(`====================================================================================`));
-          
-          initialQuery();
-        });
-      } else if (val.view_table === "Roles") {
-        let query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles 
-        INNER JOIN departments ON roles.dept_id = departments.dept_id 
-        ORDER BY roles.role_id ASC`
-        connection.query(query, function (err, res) {
-          if (err) throw err;
-          console.log(chalk.green.bold(`====================================================================================`));
-          console.log(`                              ` + chalk.red.bold(`All Roles:`));
-          console.table(res);
-          console.log(chalk.green.bold(`====================================================================================`));
-          
-          initialQuery();
-        });
-      } else if (val.view_table === "Employees") {
-          let query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
-          INNER JOIN roles ON employees.role_Id = roles.role_id 
-          INNER JOIN departments ON roles.dept_id = departments.dept_id 
-          ORDER BY last_name ASC`
-        connection.query(query, function (err, res) {
-          if (err) throw err;
-          console.log(chalk.green.bold(`====================================================================================`));
-          console.log(`                              ` + chalk.red.bold(`All Employees:`));
-          console.table(res);
-          console.log(chalk.green.bold(`====================================================================================`));
-          
-          initialQuery();
-        });
-      }
-    });
-}
-
 // Asks the user if they would like to view, add or update data
-function initialQuery() {
+initialQuery = () => {
   inquirer
     .prompt({
       name: "action",
@@ -101,7 +51,7 @@ function initialQuery() {
         "Exit",
       ],
     })
-    .then(function (answer) {
+    .then((answer) => {
       switch (answer.action) {
         case "View department, roles or employees":
           viewTable();
@@ -130,7 +80,57 @@ function initialQuery() {
     });
 }
 
-function addValue() {
+viewTable = () => {
+  inquirer
+    .prompt({
+      name: "view_table",
+      type: "list",
+      message: "Which table would you like to view?",
+      choices: ["Departments", "Roles", "Employees"],
+    })
+    .then((val) => {
+      if (val.view_table === "Departments") {
+        connection.query(`SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments`, (err, res) => {
+          if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.red.bold(`All Departments:`));
+            console.table(res);
+            console.log(chalk.green.bold(`====================================================================================`));
+          
+          initialQuery();
+        });
+      } else if (val.view_table === "Roles") {
+        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles 
+        INNER JOIN departments ON roles.dept_id = departments.dept_id 
+        ORDER BY roles.role_id ASC`
+        connection.query(query, (err, res) => {
+          if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+          console.log(`                              ` + chalk.red.bold(`All Roles:`));
+          console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          
+          initialQuery();
+        });
+      } else if (val.view_table === "Employees") {
+          const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+          INNER JOIN roles ON employees.role_Id = roles.role_id 
+          INNER JOIN departments ON roles.dept_id = departments.dept_id 
+          ORDER BY last_name ASC`
+        connection.query(query, (err, res) => {
+          if (err) throw err;
+          console.log(chalk.green.bold(`====================================================================================`));
+          console.log(`                              ` + chalk.red.bold(`All Employees:`));
+          console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          
+          initialQuery();
+        });
+      }
+    });
+}
+
+addValue = () => {
   inquirer
     .prompt({
       name: "add",
@@ -147,18 +147,13 @@ function addValue() {
             message:
               "What is the name of the department you would like to add?",
           })
-          .then(function (answer) {
+          .then((answer) => {
 
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Department Added:`) + ` ${answer.dept_add}`);
             console.log(chalk.green.bold(`====================================================================================`));
             
-            connection.query(
-              "INSERT INTO Departments SET ?",
-              {
-                name: answer.dept_add,
-              },
-              function (err, res) {
+            connection.query("INSERT INTO Departments SET ?", {name: answer.dept_add}, (err, res) => {
                 if (err) throw err;
                 initialQuery();
               }
@@ -184,20 +179,19 @@ function addValue() {
                 "What is the department ID for the role you would like to add?",
             },
           ])
-          .then(function (answer) {
+          .then((answer) => {
 
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Role Added:`) + ` ${answer.role_add} with a salary of ${answer.salary}`);
             console.log(chalk.green.bold(`====================================================================================`));
             
-            connection.query(
-              "INSERT INTO Roles SET ?",
+            connection.query("INSERT INTO Roles SET ?",
               {
                 title: answer.role_add,
                 salary: answer.salary,
                 dept_id: answer.deptId,
               },
-              function (err, res) {
+              (err, res) => {
                 if (err) throw err;
                 initialQuery();
               }
@@ -233,21 +227,20 @@ function addValue() {
               default: 1,
             },
           ])
-          .then(function (answer) {
+          .then((answer) => {
             
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Employee Added:`) + ` ${answer.empAddFirstName} ${answer.empAddLastName}`);
             console.log(chalk.green.bold(`====================================================================================`));
             
-            connection.query(
-              "INSERT INTO Employees SET ?",
+            connection.query("INSERT INTO Employees SET ?",
               {
                 last_name: answer.empAddLastName,
                 first_name: answer.empAddFirstName,
                 role_id: answer.empAddRoleId,
                 manager_id: answer.empAddMgrId,
               },
-              function (err, res) {
+              (err, res) => {
                 if (err) throw err;
                 initialQuery();
               }
@@ -269,7 +262,7 @@ function updateRole() {
           "What is the last name of the employee you would like to update?",
       },
     ])
-    .then(function (answer) {
+    .then((answer) => {
       let newRole = null;
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
@@ -279,20 +272,18 @@ function updateRole() {
 
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+        console.table(res);
         console.log(chalk.green.bold(`====================================================================================`));
            
-        console.table(res);
-        
         inquirer
             .prompt({
             name: "idConfirm",
             type: "number",
             message: "Please enter the employee's ID to confirm choice:",
-            }).then(function (answer) {
-            let query = "SELECT * FROM Employees WHERE ?";
+            }).then((answer) => {
+            const query = "SELECT * FROM Employees WHERE ?";
             connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
               for (let i = 0; i < res.length; i++) {
-                
                 let newRoleVar = answer.idConfirm;
                 inquirer
                 .prompt({
@@ -301,30 +292,30 @@ function updateRole() {
                     message:
                     "Please enter the new role ID for the employee:",
                 })
-                .then(function (answer) {
+                .then((answer) => {
 
                     newRole = answer.newRoleId;
                     
                     const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
 
-                    connection.query(query, { role_id: answer.newRoleId }, function (err, res) {
+                    connection.query(query, { role_id: answer.newRoleId }, (err, res) => {
                         if (err) throw err;
                         initialQuery();
                     }
                     );
                 })
-                .then(function () {
+                // .then(() => {
                   
-                  let query = `SELECT title FROM roles WHERE role_id = ${newRole}`;
-                  connection.query(query, function(err,res) {
-                    if (err) throw err;
+                //   const query = `SELECT title FROM roles WHERE role_id = ${newRole}`;
+                //   connection.query(query, (err,res) => {
+                //     if (err) throw err;
         
-                    console.log(chalk.green.bold(`====================================================================================`));
-                    console.log(`                     ` + chalk.red.bold(`The `));
-                    console.log(chalk.green.bold(`====================================================================================`));
+                //     console.log(chalk.green.bold(`====================================================================================`));
+                //     console.log(`                     ` + chalk.red.bold(`The `));
+                //     console.log(chalk.green.bold(`====================================================================================`));
                     
-                  })
-                });
+                //   })
+                // });
               }
             }
             );
@@ -335,7 +326,7 @@ function updateRole() {
     });
 }
 
-function removeEmp() {
+removeEmp = () => {
 
     inquirer
     .prompt([
@@ -346,12 +337,12 @@ function removeEmp() {
           "What is the last name of the employee you would like to remove?",
       },
     ])
-    .then(function (answer) {
+    .then((answer) => {
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
-      connection.query(query, { last_name: answer.empToRemove }, function (err, res) {
+      connection.query(query, { last_name: answer.empToRemove }, (err, res) => {
 
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
@@ -364,14 +355,14 @@ function removeEmp() {
             type: "number",
             message: "Please enter the employee's ID to confirm choice:",
             })
-            .then(function (answer) {
-              let query = "SELECT * FROM Employees WHERE ?";
-              connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
+            .then((answer) => {
+              const query = "SELECT * FROM Employees WHERE ?";
+              connection.query(query, { emp_id: answer.idConfirm }, (err, res) => {
               if (err) throw err;
               let idToDelete = answer.idConfirm;
               
-              let deleteQuery = `DELETE FROM employees WHERE emp_id = ${idToDelete}`;
-              connection.query(deleteQuery, function(err,res) {
+              const deleteQuery = `DELETE FROM employees WHERE emp_id = ${idToDelete}`;
+              connection.query(deleteQuery, (err,res) => {
                 if (err) throw err;
                       
                 console.log(chalk.green.bold(`====================================================================================`));
@@ -394,11 +385,11 @@ function removeEmp() {
     
 }
 
-function viewBudget() {
-  let query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget FROM roles 
+viewBudget = () => {
+  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget FROM roles 
   INNER JOIN departments ON roles.dept_id = departments.dept_id 
   GROUP BY roles.dept_id;`;
-  connection.query(query, function (err, res) {
+  connection.query(query, (err, res) => {
     if (err) throw err;
     console.log(chalk.green.bold(`====================================================================================`));
     console.log(`                              ` + chalk.red.bold(`Department Budgets:`));
@@ -409,6 +400,4 @@ function viewBudget() {
   })
 }
 
-module.exports = {
-  initialQuery
-}
+// End of line
