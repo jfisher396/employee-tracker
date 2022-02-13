@@ -35,7 +35,7 @@ connection.connect((err) => {
   initialQuery();
 });
 
-// Asks the user if they would like to view, add or update data
+// initial question asks user what they would like to do
 initialQuery = () => {
   inquirer
     .prompt({
@@ -80,6 +80,7 @@ initialQuery = () => {
     });
 }
 
+// function to view tables of departments, roles and/or employees
 viewTable = () => {
   inquirer
     .prompt({
@@ -130,6 +131,7 @@ viewTable = () => {
     });
 }
 
+// function to add a department, role and/or employee
 addValue = () => {
   inquirer
     .prompt({
@@ -250,7 +252,8 @@ addValue = () => {
     });
 }
 
-function updateRole() {
+// function to update the role of a single employee
+updateRole = () => {
 
   // asks the user for the last name of the employee they would like to update
   inquirer
@@ -268,7 +271,7 @@ function updateRole() {
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
-      connection.query(query, { last_name: answer.newRole }, function (err, res) {
+      connection.query(query, { last_name: answer.newRole }, (err, res) => {
 
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
@@ -282,7 +285,7 @@ function updateRole() {
             message: "Please enter the employee's ID to confirm choice:",
             }).then((answer) => {
             const query = "SELECT * FROM Employees WHERE ?";
-            connection.query(query, { emp_id: answer.idConfirm }, function (err, res) {
+            connection.query(query, { emp_id: answer.idConfirm }, (err, res) => {
               for (let i = 0; i < res.length; i++) {
                 let newRoleVar = answer.idConfirm;
                 inquirer
@@ -326,6 +329,7 @@ function updateRole() {
     });
 }
 
+// function to remove an employee from the database
 removeEmp = () => {
 
     inquirer
@@ -385,6 +389,7 @@ removeEmp = () => {
     
 }
 
+// function to view the budgets of each department
 viewBudget = () => {
   const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget FROM roles 
   INNER JOIN departments ON roles.dept_id = departments.dept_id 
