@@ -209,8 +209,8 @@ addValue = () => {
               name: "empAddFirstName",
               message:
                 "What is the first name of the employee you would like to add?",
-              validate: nameInput => {
-                if (nameInput) {
+              validate: firstNameInput => {
+                if (firstNameInput) {
                   return true
                 } else {
                   console.log ("Please enter a first name");
@@ -276,16 +276,18 @@ updateRole = () => {
     ])
     .then((answer) => {
       let newRole = null;
+      let employeeLastName = answer.newRole;
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
       connection.query(query, { last_name: answer.newRole }, (err, res) => {
-
+        console.log(` `)
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
         console.table(res);
         console.log(chalk.green.bold(`====================================================================================`));
+        console.log(` `);
            
         inquirer
             .prompt({
@@ -312,22 +314,27 @@ updateRole = () => {
 
                     connection.query(query, { role_id: answer.newRoleId }, (err, res) => {
                         if (err) throw err;
-                        initialQuery();
+                        
                     }
                     );
                 })
-                // .then(() => {
+                .then(() => {
                   
-                //   const query = `SELECT title FROM roles WHERE role_id = ${newRole}`;
-                //   connection.query(query, (err,res) => {
-                //     if (err) throw err;
-        
-                //     console.log(chalk.green.bold(`====================================================================================`));
-                //     console.log(`                     ` + chalk.red.bold(`The `));
-                //     console.log(chalk.green.bold(`====================================================================================`));
-                    
-                //   })
-                // });
+                  const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+                    INNER JOIN roles ON employees.role_Id = roles.role_id
+                    INNER JOIN departments ON roles.dept_id = departments.dept_id 
+                    WHERE ?`;
+                  connection.query(query, {last_name: employeeLastName }, (err,res) => {
+                    if (err) throw err;
+                    console.log(` `);
+                    console.log(chalk.green.bold(`====================================================================================`));
+                    console.log(`                              ` + chalk.red.bold(`Updated Employee Information:`));
+                    console.table(res);
+                    console.log(chalk.green.bold(`====================================================================================`));
+                    console.log(` `);
+                    initialQuery();
+                  })
+                });
               }
             }
             );
