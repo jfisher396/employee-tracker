@@ -264,41 +264,74 @@ addValue = () => {
 // function to update the role of a single employee
 updateRole = () => {
 
+  let listOfEmployees = [];
+  let listOfRoles = [];
+  
   // asks the user for the last name of the employee they would like to update
   inquirer
     .prompt([
       {
-        name: "newRole",
+        name: "empLastName",
         type: "input",
         message:
           "What is the last name of the employee you would like to update?",
       },
     ])
+    // then it searches the database for employees with that last name and puts them into an array
     .then((answer) => {
-      let newRole = null;
-      let employeeLastName = answer.newRole;
+
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
-      connection.query(query, { last_name: answer.newRole }, (err, res) => {
+
+      connection.query(query, { last_name: answer.empLastName }, (err, res) => {
+        if (err) throw err;
+
+        listOfEmployees = res.map(employee => (
+              {
+                name: employee.First_Name,
+                value: employee.Employee_ID
+              }
+            ))
+      });
+
+      connection.query("SELECT * FROM roles", (err, res) => {
+        if (err) throw err;
+
+        listOfRoles = res.map(role => (
+          {
+            name: role.title,
+            value: role.role_id
+          }
+        ))
+      });
+
+      let newRole = null;
+      let employeeLastName = answer.empLastName;
+      
+      connection.query(query, { last_name: answer.empLastName }, (err, res) => {
         console.log(` `)
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
         console.table(res);
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(` `);
-           
-        inquirer
-            .prompt({
-            name: "idConfirm",
-            type: "number",
-            message: "Please enter the employee's ID to confirm choice:",
-            }).then((answer) => {
+        
+        
+        inquirer.prompt({
+            type: "list",
+            name: "nameConfirm",
+            message: "Please select the employee to confirm",
+            choices: listOfEmployees
+            })
+            .then((answer) => {
             const query = "SELECT * FROM Employees WHERE ?";
             connection.query(query, { emp_id: answer.idConfirm }, (err, res) => {
-              for (let i = 0; i < res.length; i++) {
+                if (err) throw err;
                 let newRoleVar = answer.idConfirm;
+
+
                 inquirer
                 .prompt({
                     name: "newRoleId",
@@ -319,7 +352,6 @@ updateRole = () => {
                     );
                 })
                 .then(() => {
-                  
                   const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
                     INNER JOIN roles ON employees.role_Id = roles.role_id
                     INNER JOIN departments ON roles.dept_id = departments.dept_id 
@@ -335,7 +367,6 @@ updateRole = () => {
                     initialQuery();
                   })
                 });
-              }
             }
             );
             });
