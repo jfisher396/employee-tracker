@@ -266,6 +266,7 @@ updateRole = () => {
 
   let listOfEmployees = [];
   let listOfRoles = [];
+  let employeeLastName = null;
   
   // asks the user for the last name of the employee they would like to update
   inquirer
@@ -275,106 +276,91 @@ updateRole = () => {
         type: "input",
         message:
           "What is the last name of the employee you would like to update?",
-      },
+      }
     ])
     // then it searches the database for employees with that last name and puts them into an array
     .then((answer) => {
 
+      employeeLastName = answer.empLastName;
+      // db query to find all employees by user inputted last name
+      // then puts part of the response into an array for subsequent inquirer question
+      // then displays info to the user in table
       const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
       INNER JOIN roles ON employees.role_Id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
-
+      // 
       connection.query(query, { last_name: answer.empLastName }, (err, res) => {
         if (err) throw err;
 
-        listOfEmployees = res.map(employee => (
-              {
-                name: employee.First_Name,
-                value: employee.Employee_ID
-              }
-            ))
-      });
-
-      connection.query("SELECT * FROM roles", (err, res) => {
-        if (err) throw err;
-
-        listOfRoles = res.map(role => (
-          {
-            name: role.title,
-            value: role.role_id
-          }
-        ))
-      });
-
-      let newRole = null;
-      let employeeLastName = answer.empLastName;
-      
-      connection.query(query, { last_name: answer.empLastName }, (err, res) => {
         console.log(` `)
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(`                              ` + chalk.red.bold(`Employee Information:`));
         console.table(res);
         console.log(chalk.green.bold(`====================================================================================`));
         console.log(` `);
-        
-        
-        inquirer.prompt({
-            type: "list",
-            name: "nameConfirm",
-            message: "Please select the employee to confirm",
-            choices: listOfEmployees
-            })
-            .then((answer) => {
-            const query = "SELECT * FROM Employees WHERE ?";
-            connection.query(query, { emp_id: answer.idConfirm }, (err, res) => {
-                if (err) throw err;
-                let newRoleVar = answer.idConfirm;
 
+        listOfEmployees = res.map(employee => (
+          {
+            name: employee.First_Name,
+            value: employee.Employee_ID
+          }
+        ));
 
-                inquirer
-                .prompt({
-                    name: "newRoleId",
-                    type: "number",
-                    message:
-                    "Please enter the new role ID for the employee:",
-                })
-                .then((answer) => {
+        // db query to find all roles and then put them into an array for a subsequent inquirer question
+        connection.query("SELECT * FROM roles", (err, res) => {
+          if (err) throw err;
 
-                    newRole = answer.newRoleId;
-                    
-                    const query = `UPDATE Employees SET ? WHERE emp_id = ${newRoleVar}`;
-
-                    connection.query(query, { role_id: answer.newRoleId }, (err, res) => {
-                        if (err) throw err;
-                        
-                    }
-                    );
-                })
-                .then(() => {
-                  const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
-                    INNER JOIN roles ON employees.role_Id = roles.role_id
-                    INNER JOIN departments ON roles.dept_id = departments.dept_id 
-                    WHERE ?`;
-                  connection.query(query, {last_name: employeeLastName }, (err,res) => {
-                    if (err) throw err;
-                    console.log(` `);
-                    console.log(chalk.green.bold(`====================================================================================`));
-                    console.log(`                              ` + chalk.red.bold(`Updated Employee Information:`));
-                    console.table(res);
-                    console.log(chalk.green.bold(`====================================================================================`));
-                    console.log(` `);
-                    initialQuery();
-                  })
-                });
+          listOfRoles = res.map(role => (
+            {
+              name: role.title,
+              value: role.role_id
             }
-            );
+          ))
+
+          inquirer.prompt([
+            {
+              type: "list",
+              name: "nameConfirm",
+              message: "Please select the employee to confirm",
+              choices: listOfEmployees
+            },
+            {
+              type: "list",
+              name: "roleChoice",
+              message: "Please select a new role for the employee",
+              choices: listOfRoles
+            }
+          ])
+          .then((answers) => {
+
+            const query = `UPDATE employees SET role_id = ${answers.roleChoice} WHERE emp_id = ${answers.nameConfirm}`;
+            connection.query(query, (err, res) => {
+                if (err) throw err;
             });
-    
-    }
-    );
+          })
+            .then(() => {
+              const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, salary AS Salary, departments.name AS Department FROM employees 
+                INNER JOIN roles ON employees.role_Id = roles.role_id
+                INNER JOIN departments ON roles.dept_id = departments.dept_id 
+                WHERE ?`;
+              connection.query(query, {last_name: employeeLastName }, (err,res) => {
+                if (err) throw err;
+                console.log(` `);
+                console.log(chalk.green.bold(`====================================================================================`));
+                console.log(`                              ` + chalk.red.bold(`Updated Employee Information:`));
+                console.table(res);
+                console.log(chalk.green.bold(`====================================================================================`));
+                console.log(` `);
+                initialQuery();
+              })
+            });
+        });
+      });        
     });
+    
 }
+
 
 // function to remove an employee from the database
 removeEmp = () => {
