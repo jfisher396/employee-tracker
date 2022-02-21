@@ -94,11 +94,12 @@ viewTable = () => {
       if (val.view_table === "Departments") {
         connection.query(`SELECT dept_id AS Department_ID, departments.name AS Department_Name FROM departments`, (err, res) => {
           if (err) throw err;
+          console.log(' ');
           console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                              ` + chalk.red.bold(`All Departments:`));
-            console.table(res);
-            console.log(chalk.green.bold(`====================================================================================`));
-          
+          console.log(`                              ` + chalk.red.bold(`All Departments:`));
+          console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          console.log(' ');
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
@@ -107,11 +108,12 @@ viewTable = () => {
         ORDER BY roles.role_id ASC`
         connection.query(query, (err, res) => {
           if (err) throw err;
+          console.log(' ');
           console.log(chalk.green.bold(`====================================================================================`));
           console.log(`                              ` + chalk.red.bold(`All Roles:`));
           console.table(res);
           console.log(chalk.green.bold(`====================================================================================`));
-          
+          console.log(' ');
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
@@ -121,11 +123,12 @@ viewTable = () => {
           ORDER BY last_name ASC`
         connection.query(query, (err, res) => {
           if (err) throw err;
+          console.log(' ');
           console.log(chalk.green.bold(`====================================================================================`));
           console.log(`                              ` + chalk.red.bold(`All Employees:`));
           console.table(res);
           console.log(chalk.green.bold(`====================================================================================`));
-          
+          console.log(' ');
           initialQuery();
         });
       }
