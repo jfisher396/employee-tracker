@@ -178,6 +178,8 @@ addValue = () => {
               }
             );
           });
+
+
         // if user selects "Role"
       } else if (val.add === "Role") {
         connection.query(`SELECT * FROM departments`, (err, res) => {
@@ -235,63 +237,77 @@ addValue = () => {
             );
           });
         })
+
+
+      // if user selects "Employee"
       } else if (val.add === "Employee") {
-        inquirer
-          .prompt([
-            
+
+        connection.query(`SELECT * FROM roles`, (err,res) => {
+          if (err) throw err;
+          listOfRoles = res.map(role => (
             {
-              type: "input",
-              name: "empAddFirstName",
-              message:
-                "What is the first name of the employee you would like to add?",
-              validate: firstNameInput => {
-                if (firstNameInput) {
-                  return true
-                } else {
-                  console.log ("Please enter a first name");
-                  return false
-                }
-              }
-            },
-            {
-              type: "input",
-              name: "empAddLastName",
-              message:
-                "What is the last name of the employee you would like to add?",
-            },
-            {
-              type: "number",
-              name: "empAddRoleId",
-              message:
-                "What is the role ID of the employee you would like to add?",
-            },
-            {
-              type: "number",
-              name: "empAddMgrId",
-              message:
-                "What is the manager ID of the employee you would like to add?",
-              default: 1,
-            },
-          ])
-          .then((answer) => {
-            console.log(' ');
-            console.log(chalk.green.bold(`====================================================================================`));
-            console.log(`                     ` + chalk.red.bold(`Employee Added:`) + ` ${answer.empAddFirstName} ${answer.empAddLastName}`);
-            console.log(chalk.green.bold(`====================================================================================`));
-            console.log(' ');
-            connection.query("INSERT INTO Employees SET ?",
+              name: role.title,
+              value: role.role_id
+            }
+          ))   
+          inquirer
+            .prompt([
+              
               {
-                last_name: answer.empAddLastName,
-                first_name: answer.empAddFirstName,
-                role_id: answer.empAddRoleId,
-                manager_id: answer.empAddMgrId,
+                type: "input",
+                name: "empAddFirstName",
+                message:
+                  "What is the first name of the employee you would like to add?",
+                validate: firstNameInput => {
+                  if (firstNameInput) {
+                    return true
+                  } else {
+                    console.log ("Please enter a first name");
+                    return false
+                  }
+                }
               },
-              (err, res) => {
-                if (err) throw err;
-                initialQuery();
-              }
-            );
-          });
+              {
+                type: "input",
+                name: "empAddLastName",
+                message:
+                  "What is the last name of the employee you would like to add?",
+              },
+              {
+                type: "list",
+                name: "roleId",
+                message: "What is the role of the employee you would like to add?",
+                choices: listOfRoles
+              },
+              {
+                type: "number",
+                name: "empAddMgrId",
+                message:
+                  "What is the manager ID of the employee you would like to add?",
+                default: 1,
+              },
+            ])
+            .then((answer) => {
+              console.log(' ');
+              console.log(chalk.green.bold(`====================================================================================`));
+              console.log(`                     ` + chalk.red.bold(`Employee Added:`) + ` ${answer.empAddFirstName} ${answer.empAddLastName}`);
+              console.log(chalk.green.bold(`====================================================================================`));
+              console.log(' ');
+              connection.query("INSERT INTO Employees SET ?",
+                {
+                  last_name: answer.empAddLastName,
+                  first_name: answer.empAddFirstName,
+                  role_id: answer.roleId,
+                  manager_id: answer.empAddMgrId,
+                },
+                (err, res) => {
+                  if (err) throw err;
+                  initialQuery();
+                }
+              );
+            });
+          })
+
       }
     });
 }
