@@ -137,6 +137,11 @@ viewTable = () => {
 
 // function to add a department, role and/or employee
 addValue = () => {
+
+  let listOfDepartments = [];
+  let listOfRoles = [];
+
+
   inquirer
     .prompt({
       name: "add",
@@ -154,11 +159,11 @@ addValue = () => {
               "What is the name of the department you would like to add?",
           })
           .then((answer) => {
-
+            console.log(' ');
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Department Added:`) + ` ${answer.dept_add}`);
             console.log(chalk.green.bold(`====================================================================================`));
-            
+            console.log(' ');
             connection.query("INSERT INTO Departments SET ?", {name: answer.dept_add}, (err, res) => {
                 if (err) throw err;
                 initialQuery();
@@ -166,7 +171,17 @@ addValue = () => {
             );
           });
       } else if (val.add === "Role") {
-        inquirer
+
+        connection.query(`SELECT * FROM departments`, (err, res) => {
+          if (err) throw err;
+          listOfDepartments = res.map(dept => (
+            {
+              name: dept.name,
+              value: dept.dept_id
+            }
+          ))
+
+          inquirer
           .prompt([
             {
               type: "input",
@@ -179,18 +194,18 @@ addValue = () => {
               message: "What is the salary for the role you would like to add?",
             },
             {
-              type: "number",
+              type: "list",
               name: "deptId",
-              message:
-                "What is the department ID for the role you would like to add?",
-            },
+              message: "What is the department for the role you would like to add?",
+              choices: listOfDepartments
+            }
           ])
           .then((answer) => {
-
+            console.log(' ');
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Role Added:`) + ` ${answer.role_add} with a salary of ${answer.salary}`);
             console.log(chalk.green.bold(`====================================================================================`));
-            
+            console.log(' ');
             connection.query("INSERT INTO Roles SET ?",
               {
                 title: answer.role_add,
@@ -203,6 +218,8 @@ addValue = () => {
               }
             );
           });
+        })
+        
       } else if (val.add === "Employee") {
         inquirer
           .prompt([
@@ -242,11 +259,11 @@ addValue = () => {
             },
           ])
           .then((answer) => {
-            
+            console.log(' ');
             console.log(chalk.green.bold(`====================================================================================`));
             console.log(`                     ` + chalk.red.bold(`Employee Added:`) + ` ${answer.empAddFirstName} ${answer.empAddLastName}`);
             console.log(chalk.green.bold(`====================================================================================`));
-            
+            console.log(' ');
             connection.query("INSERT INTO Employees SET ?",
               {
                 last_name: answer.empAddLastName,
