@@ -137,11 +137,10 @@ viewTable = () => {
 
 // function to add a department, role and/or employee
 addValue = () => {
-
+  // array variables to store data pulled from database for use in questions
   let listOfDepartments = [];
   let listOfRoles = [];
-
-
+  // asks user what they would like to add
   inquirer
     .prompt({
       name: "add",
@@ -150,6 +149,7 @@ addValue = () => {
       choices: ["Department", "Role", "Employee"],
     })
     .then((val) => {
+      // if user selects "Department"
       if (val.add === "Department") {
         inquirer
           .prompt({
@@ -157,6 +157,14 @@ addValue = () => {
             name: "dept_add",
             message:
               "What is the name of the department you would like to add?",
+            validate: newDeptInput => {
+              if (newDeptInput) {
+                return true
+              } else {
+                console.log("Please enter a name for the new department");
+                return false
+              }
+            }
           })
           .then((answer) => {
             console.log(' ');
@@ -170,8 +178,8 @@ addValue = () => {
               }
             );
           });
+        // if user selects "Role"
       } else if (val.add === "Role") {
-
         connection.query(`SELECT * FROM departments`, (err, res) => {
           if (err) throw err;
           listOfDepartments = res.map(dept => (
@@ -180,7 +188,6 @@ addValue = () => {
               value: dept.dept_id
             }
           ))
-
           inquirer
           .prompt([
             {
@@ -219,7 +226,6 @@ addValue = () => {
             );
           });
         })
-        
       } else if (val.add === "Employee") {
         inquirer
           .prompt([
