@@ -194,11 +194,20 @@ addValue = () => {
               type: "input",
               name: "role_add",
               message: "What is the name of the role you would like to add?",
+              validate: newRoleInput => {
+                if (newRoleInput) {
+                  return true
+                } else {
+                  console.log("Please enter a name for the new role");
+                  return false
+                }
+              }
             },
             {
               type: "number",
               name: "salary",
               message: "What is the salary for the role you would like to add?",
+              default: 10000
             },
             {
               type: "list",
