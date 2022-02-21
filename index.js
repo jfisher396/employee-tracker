@@ -103,7 +103,7 @@ viewTable = () => {
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
-        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, departments.name AS Department FROM roles 
+        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, salary AS Salary, departments.name AS Department FROM roles 
         INNER JOIN departments ON roles.dept_id = departments.dept_id 
         ORDER BY roles.role_id ASC`
         connection.query(query, (err, res) => {
