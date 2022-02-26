@@ -1,5 +1,4 @@
 // npm packages set as variables
-
 const inquirer = require("inquirer");
 const figlet = require("figlet");
 const chalk = require("chalk");
@@ -140,6 +139,7 @@ addValue = () => {
   // array variables to store data pulled from database for use in questions
   let listOfDepartments = [];
   let listOfRoles = [];
+  let listOfManagers = [];
   // asks user what they would like to add
   inquirer
     .prompt({
@@ -480,11 +480,12 @@ viewBudget = () => {
   GROUP BY roles.dept_id;`;
   connection.query(query, (err, res) => {
     if (err) throw err;
+    console.log(` `);
     console.log(chalk.green.bold(`====================================================================================`));
     console.log(`                              ` + chalk.red.bold(`Department Budgets:`));
     console.table(res);
     console.log(chalk.green.bold(`====================================================================================`));
-    
+    console.log(` `);
     initialQuery();
   })
 }
