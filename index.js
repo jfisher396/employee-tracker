@@ -433,13 +433,18 @@ removeEmp = () => {
       INNER JOIN departments ON roles.dept_id = departments.dept_id 
       WHERE ?`;
       connection.query(query, { last_name: answer.empToRemove }, (err, res) => {
-
-        console.log(chalk.green.bold(`====================================================================================`));
-        console.log(`                              ` + chalk.red.bold(`Employee Information:`));
-        console.table(res);
-        console.log(chalk.green.bold(`====================================================================================`));
-        
-        inquirer
+        if (err) throw err;
+        if (res.length === 0) {
+          console.log (chalk.red.inverse("No employee found by that name"));
+          initialQuery();
+        } else {
+          console.log(chalk.green.inverse("Employee found"))
+          console.log(` `)
+          console.log(chalk.green.bold(`====================================================================================`));
+          console.log(`                              ` + chalk.red.bold(`Employee Information:`));
+          console.table(res);
+          console.log(chalk.green.bold(`====================================================================================`));
+          inquirer
             .prompt({
             name: "idConfirm",
             type: "number",
@@ -468,7 +473,7 @@ removeEmp = () => {
             }
             );
             });
-    
+        }
     }
     );
     });
