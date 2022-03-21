@@ -249,7 +249,9 @@ addValue = () => {
               name: role.title,
               value: role.role_id
             }
-          ))   
+          ));
+          
+          
           inquirer
             .prompt([
               
@@ -475,7 +477,9 @@ removeEmp = () => {
 
 // function to view the budgets of each department
 viewBudget = () => {
-  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget FROM roles 
+  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget 
+  FROM roles 
+  INNER JOIN employees USING (role_id)
   INNER JOIN departments ON roles.dept_id = departments.dept_id 
   GROUP BY roles.dept_id;`;
   connection.query(query, (err, res) => {
