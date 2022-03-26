@@ -455,7 +455,6 @@ removeEmp = () => {
               connection.query(query, { emp_id: answer.idConfirm }, (err, res) => {
               if (err) throw err;
               let idToDelete = answer.idConfirm;
-              
               const deleteQuery = `DELETE FROM employees WHERE emp_id = ${idToDelete}`;
               connection.query(deleteQuery, (err,res) => {
                 if (err) throw err;
@@ -464,12 +463,8 @@ removeEmp = () => {
                 console.log(`                  ` + chalk.red.bold(`Employee with ID #${idToDelete} has been removed.`));
                 console.log(chalk.green.bold(`====================================================================================`));
                 
-
                 initialQuery();
               })
-
-                    
-            
             }
             );
             });
@@ -482,7 +477,7 @@ removeEmp = () => {
 
 // function to view the budgets of each department
 viewBudget = () => {
-  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, SUM(salary) AS Budget 
+  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, CONCAT('$', FORMAT(SUM(salary),2)) AS Budget 
   FROM roles 
   INNER JOIN employees USING (role_id)
   INNER JOIN departments ON roles.dept_id = departments.dept_id 
