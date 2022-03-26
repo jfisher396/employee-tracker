@@ -102,7 +102,7 @@ viewTable = () => {
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
-        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, salary AS Salary, departments.name AS Department FROM roles 
+        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, CONCAT('$', FORMAT (salary, 0)) AS Salary, departments.name AS Department FROM roles 
         INNER JOIN departments ON roles.dept_id = departments.dept_id 
         ORDER BY roles.role_id ASC`
         connection.query(query, (err, res) => {
@@ -477,7 +477,7 @@ removeEmp = () => {
 
 // function to view the budgets of each department
 viewBudget = () => {
-  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, CONCAT('$', FORMAT(SUM(salary),2)) AS Budget 
+  const query = `SELECT departments.dept_id AS Dept_ID, departments.name AS Department_Name, CONCAT('$', FORMAT(SUM(salary),0)) AS Budget 
   FROM roles 
   INNER JOIN employees USING (role_id)
   INNER JOIN departments ON roles.dept_id = departments.dept_id 
