@@ -1,61 +1,59 @@
 
   
-  # Employee Tracker
+# Project Title
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-  ## Description:
-
-  A solution for managing a company's employees using node, inquirer, and MySQL.
-  
-  ## Visuals:
- 
-  ![GitHub Logo](/media/Employee%20Tracker%201.png)
- 
-  ![GitHub Logo](/media/Employee%20Tracker%202.png)
-  ---
-
-  ## Table of Contents:
-  *[Installation](#Installation) 
-  *[Usage](#Usage)
-  *[License](#License)
-  *[Contributing](#Contribution)
-  *[Tests](#Tests) 
-  *[Questions](#Contact-Information)
+Employee Tracker
 
 ---
 
-  ## Installation:
-
-  Clone repository from https://github.com/jfisher396/employee-tracker. Install dependencies then run node index.js in terminal.
+## Table of Contents
+* [Description](#description)
+* [Visuals](#visuals)
+* [License](#license)
+* [Contributing](#contribution)
+* [Questions](#contact-information)
 
 ---
 
-  ## Usage:
+## Description
 
+  A **C**ontent **M**anagement **S**ystem solution for managing a company's employees using Node.js, the Inquirer npm package and a MySQL database.   
+
+---
   
+## Visuals
+
+<img src="media/schema.png" width="500">
+---
+
+![screenshot1](/media/employee-tracker-1.png)
+
+---
+![screenshot2](/media/employee-tracker-2.png)
+
+---
+![screenshot](/media/employee-tracker-3.png)
+
+---
+![screenshot2](/media/employee-tracker-4.png)
 
 ---
 
   ## License
-  License used for this project - MIT
-    * For more information on license types, please reference this website
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+  * For more information on license types, please reference this website
   for additional licensing information - [https: //choosealicense.com/](https://choosealicense.com/).
 
 ---
 
-  ## Contributing:
+  ## Contributing
 
-  Clone repository, make changes and submit a pull request.
-
----
-
-  ## Tests:
-  None
+  Not accepting contributions.
 
 ---
 
-  ## Contact Information:
-    *GitHub Username: jfisher396
-    *GitHub Email: jfisher396@hotmail.com
+## Contact Information
+  * GitHub Username: [jfisher396](https://github.com/jfisher396)
+  * Email: james@james-fisher-web-developer.com
   
