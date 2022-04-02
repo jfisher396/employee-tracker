@@ -102,7 +102,8 @@ viewTable = () => {
           initialQuery();
         });
       } else if (val.view_table === "Roles") {
-        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, CONCAT('$', FORMAT (salary, 0)) AS Salary, departments.name AS Department FROM roles 
+        const query = `SELECT roles.role_id AS Role_ID, roles.title AS Title, CONCAT('$', FORMAT (salary, 0)) AS Salary, departments.name AS Department 
+        FROM roles 
         INNER JOIN departments ON roles.dept_id = departments.dept_id 
         ORDER BY roles.role_id ASC`
         connection.query(query, (err, res) => {
@@ -116,7 +117,8 @@ viewTable = () => {
           initialQuery();
         });
       } else if (val.view_table === "Employees") {
-          const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, CONCAT('$', FORMAT (salary, 0)) AS Salary, departments.name AS Department FROM employees 
+          const query = `SELECT emp_id AS Employee_ID, first_name AS First_Name, last_name AS Last_Name, title AS Title, CONCAT('$', FORMAT (salary, 0)) AS Salary, departments.name AS Department 
+          FROM employees 
           INNER JOIN roles ON employees.role_Id = roles.role_id 
           INNER JOIN departments ON roles.dept_id = departments.dept_id 
           ORDER BY last_name ASC`
