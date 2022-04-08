@@ -4,6 +4,13 @@
 
 Employee Tracker
 
+<p align="center">
+    <img src="https://img.shields.io/badge/-JavaScript-blue" />
+    <img src="https://img.shields.io/badge/mySQL-orange"  />
+    <img src="https://img.shields.io/badge/npm-red" />
+    <img src="https://img.shields.io/badge/-node.js-green" />
+</p>
+
 ---
 
 ## Table of Contents
