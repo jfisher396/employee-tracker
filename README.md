@@ -4,7 +4,7 @@
 
 Employee Tracker
 
-<p align="center">
+<p>
     <img src="https://img.shields.io/badge/-JavaScript-blue" />
     <img src="https://img.shields.io/badge/mySQL-orange"  />
     <img src="https://img.shields.io/badge/npm-red" />
@@ -17,6 +17,7 @@ Employee Tracker
 * [Description](#description)
 * [Schema](#schema)
 * [Visuals](#visuals)
+* [Walkthrough_Video](#walkthrough-video)
 * [License](#license)
 * [Contributing](#contribution)
 * [Questions](#contact-information)
@@ -75,7 +76,13 @@ So that I can organize and plan my business
 
 ---
 
-  ## License
+## Walkthrough Video
+
+[Link to walkthrough video](https://drive.google.com/file/d/1vJN3fQkYHDl5DWrH7__TFE1T8KD0wgrA/view)
+
+---
+
+## License
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
   * For more information on license types, please reference this website
@@ -83,7 +90,7 @@ So that I can organize and plan my business
 
 ---
 
-  ## Contributing
+## Contributing
 
   Not accepting contributions.
 
@@ -92,4 +99,6 @@ So that I can organize and plan my business
 ## Contact Information
   * GitHub Username: [jfisher396](https://github.com/jfisher396)
   * Email: james@james-fisher-web-developer.com
-  
+  * <p>
+    <a href="https://www.linkedin.com/in/jamesfisher-webdev/"><img alt="Linkedin: James Fisher" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank" /></a>
+    </p>
