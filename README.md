@@ -1,8 +1,6 @@
 
   
-# Project Title
-
-Employee Tracker
+# Employee Tracker
 
 <p>
     <img src="https://img.shields.io/badge/-JavaScript-blue" />
